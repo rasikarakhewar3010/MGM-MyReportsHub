@@ -1,0 +1,75 @@
+<%- include('../partials/header') %>
+
+<h2 class="mb-4">Create a New Custom Form</h2>
+
+<div class="card shadow-sm">
+    <div class="card-body p-4">
+        <form action="/dashboard/forms" method="POST">
+            <div class="mb-4">
+                <label for="title" class="form-label fs-5">Form Title</label>
+                <input type="text" name="title" id="title" class="form-control" placeholder="e.g., Final Year Project Reports" required>
+            </div>
+            <div class="mb-4">
+                <label for="description" class="form-label fs-5">Description / Instructions</label>
+                <textarea name="description" id="description" rows="3" class="form-control" placeholder="e.g., Submit your report in PDF format." required></textarea>
+            </div>
+
+            <hr class="my-4">
+            
+            <h4 class="mb-3">Form Fields</h4>
+            <div id="fields-container">
+                <!-- Fields will be dynamically added here -->
+            </div>
+            
+            <button type="button" id="add-field-btn" class="btn btn-outline-secondary">
+                <i class="fas fa-plus me-2"></i>Add Field
+            </button>
+
+            <div class="d-grid mt-4">
+                <button type="submit" class="btn btn-mgm-primary btn-lg">Save Form</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.getElementById('add-field-btn').addEventListener('click', () => {
+        const container = document.getElementById('fields-container');
+        const fieldIndex = container.children.length;
+
+        const newField = document.createElement('div');
+        newField.className = 'row g-3 align-items-center border rounded p-3 mb-3';
+        newField.innerHTML = `
+            <div class="col-md-5">
+                <label class="form-label">Field Label</label>
+                <input type="text" name="field_label" class="form-control" placeholder="e.g., Student Name" required>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Field Type</label>
+                <select name="field_type" class="form-select">
+                    <option value="text">Text (Single Line)</option>
+                    <option value="textarea">Text Area (Multi-line)</option>
+                    <option value="email">Email</option>
+                    <option value="number">Number</option>
+                    <option value="file">File Upload (PDF)</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <div class="form-check mt-4">
+                    <input class="form-check-input" type="checkbox" name="field_required" id="required-${fieldIndex}" checked>
+                    <label class="form-check-label" for="required-${fieldIndex}">
+                        Required
+                    </label>
+                </div>
+            </div>
+            <div class="col-md-1">
+                <button type="button" class="btn btn-danger btn-sm mt-4" onclick="this.parentElement.parentElement.remove()">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        `;
+        container.appendChild(newField);
+    });
+</script>
+
+<%- include('../partials/footer') %>

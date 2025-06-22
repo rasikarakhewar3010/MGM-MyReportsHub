@@ -1,0 +1,44 @@
+<%- include('../partials/header') %>
+<div class="row justify-content-center mt-4">
+    <div class="col-lg-8">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h3 class="mb-0"><%= form.title %></h3>
+            </div>
+            <div class="card-body p-4">
+                <p class="lead"><%= form.description %></p>
+                <p class="text-muted">Form created by: <%= form.createdBy.name %></p>
+                <hr>
+                <form action="/form/<%= form._id %>" method="POST" enctype="multipart/form-data">
+                    
+                    <% form.fields.forEach(field => { %>
+                        <div class="mb-3">
+                            <label for="<%= field.label.replace(/\s+/g, '-') %>" class="form-label">
+                                <%= field.label %>
+                                <% if (field.required) { %><span class="text-danger">*</span><% } %>
+                            </label>
+
+                            <% if (field.type === 'textarea') { %>
+                                <!-- THE FIX IS HERE: name="<%= field.label %>" -->
+                                <textarea class="form-control" id="<%= field.label.replace(/\s+/g, '-') %>" name="<%= field.label %>" rows="3" <%= field.required ? 'required' : '' %>></textarea>
+                            
+                            <% } else if (field.type === 'file') { %>
+                                <!-- IMPORTANT: The file input name is 'reportFile' by convention, which the controller looks for -->
+                                <input type="file" class="form-control" id="<%= field.label.replace(/\s+/g, '-') %>" name="reportFile" accept=".pdf" <%= field.required ? 'required' : '' %>>
+                            
+                            <% } else { %>
+                                <!-- THE FIX IS HERE: name="<%= field.label %>" -->
+                                <input type="<%= field.type %>" class="form-control" id="<%= field.label.replace(/\s+/g, '-') %>" name="<%= field.label %>" <%= field.required ? 'required' : '' %>>
+                            <% } %>
+                        </div>
+                    <% }) %>
+
+                    <div class="d-grid mt-4">
+                        <button type="submit" class="btn btn-mgm-primary btn-lg">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<%- include('../partials/footer') %>

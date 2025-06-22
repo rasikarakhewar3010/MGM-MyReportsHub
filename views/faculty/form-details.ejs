@@ -1,0 +1,82 @@
+<%- include('../partials/header') %>
+
+<!-- Page Header -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="mb-0"><%= form.title %></h2>
+        <p class="text-muted mb-0"><%= form.description %></p>
+    </div>
+    <a href="/dashboard/forms/<%= form._id %>/export" class="btn btn-mgm-secondary">
+        <i class="fas fa-file-excel me-1"></i> Export Submissions
+    </a>
+</div>
+
+<!-- Share Link -->
+<div class="card mb-4 shadow-sm">
+    <div class="card-body">
+        <h5 class="card-title">Share Link</h5>
+        <div class="input-group">
+            <input type="text" class="form-control" value="<%= `${req.protocol}://${req.get('host')}/form/${form._id}` %>" readonly>
+            <button class="btn btn-outline-secondary copy-link-btn" type="button"><i class="fas fa-copy"></i></button>
+        </div>
+    </div>
+</div>
+
+<!-- Submissions Table -->
+<div class="card shadow-sm">
+    <div class="card-body">
+        <h4 class="card-title"><i class="fas fa-inbox me-2"></i>Submissions (<%= submissions.length %>)</h4>
+
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <% form.fields.forEach(field => { %>
+                            <th><%= field.label %></th>
+                        <% }) %>
+                        <th>Submission Date</th>
+                    </tr>
+                </thead>
+                <tbody id="submissions-table" data-form-id="<%= form._id %>">
+                    <% if (submissions.length > 0) { %>
+                        <% submissions.forEach(sub => { %>
+                            <tr>
+                                <% form.fields.forEach(field => { %>
+                                    <td>
+                                        <% 
+                                            let value;
+                                            try {
+                                                value = sub.data instanceof Map
+                                                    ? sub.data.get(field.label)
+                                                    : (typeof sub.data === 'object' ? sub.data[field.label] : null);
+                                            } catch (e) {
+                                                value = null;
+                                            }
+                                        %>
+
+                                        <% if (field.type === 'file' && value) { %>
+                                            <a href="<%= value %>" target="_blank" class="btn btn-sm btn-outline-primary">
+                                                <i class="fas fa-file-pdf me-1"></i> View File
+                                            </a>
+                                        <% } else { %>
+                                            <%= value || '-' %>
+                                        <% } %>
+                                    </td>
+                                <% }) %>
+                                <td><%= new Date(sub.createdAt).toLocaleString() %></td>
+                            </tr>
+                        <% }) %>
+                    <% } else { %>
+                        <tr>
+                            <td colspan="<%= form.fields.length + 1 %>" class="text-center p-4">
+                                No submissions received yet.
+                            </td>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

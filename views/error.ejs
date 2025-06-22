@@ -1,0 +1,10 @@
+<%- include('./partials/header', { title: title || 'Error' }) %>
+<div class="text-center mt-5">
+    <h1 class="display-1 text-danger">Error</h1>
+    <p class="lead">Sorry, something went wrong.</p>
+    <% if (typeof message !== 'undefined' && message) { %>
+        <p class="text-muted"><%= message %></p>
+    <% } %>
+    <a href="/dashboard" class="btn btn-mgm-primary">Go to Dashboard</a>
+</div>
+<%- include('./partials/footer') %>

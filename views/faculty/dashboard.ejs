@@ -1,0 +1,34 @@
+<%- include('../partials/header') %>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">Your Forms</h2>
+    <a href="/dashboard/forms/new" class="btn btn-mgm-primary">
+        <i class="fas fa-plus-circle me-2"></i>Create New Form
+    </a>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <% if (forms.length > 0) { %>
+            <div class="list-group">
+                <% forms.forEach(form => { %>
+                    <a href="/dashboard/forms/<%= form._id %>" class="list-group-item list-group-item-action">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1"><%= form.title %></h5>
+                            <span class="badge bg-primary rounded-pill"><%= form.submissionCount %> Submissions</span>
+                        </div>
+                        <p class="mb-1 text-muted"><%= form.description %></p>
+                        <small>Created: <%= form.createdAt.toLocaleDateString() %></small>
+                    </a>
+                <% }) %>
+            </div>
+        <% } else { %>
+            <div class="text-center p-4">
+                <h4>No Forms Found</h4>
+                <p>Click the "Create New Form" button to get started.</p>
+            </div>
+        <% } %>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

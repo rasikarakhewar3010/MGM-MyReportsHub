@@ -1,0 +1,145 @@
+:root {
+    --primary-blue: #0056b3;
+    --dark-blue: #003366;
+    --accent-yellow: #ffc107;
+    --light-gray: #f8f9fa;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f5f5f5;
+}
+
+/* Header Styles */
+.college-header {
+    background-color: var(--dark-blue);
+    color: white;
+    padding: 15px 0;
+}
+
+.college-logo {
+    height: 50px;
+}
+
+.college-name {
+    font-weight: 700;
+    font-size: 1.5rem;
+    margin-left: 10px;
+}
+
+/* Navigation */
+.faculty-nav {
+    background-color: var(--primary-blue);
+}
+
+.faculty-nav .nav-link {
+    color: white !important;
+    font-weight: 500;
+    padding: 10px 20px;
+}
+
+.faculty-nav .nav-link:hover {
+    color: var(--accent-yellow) !important;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.faculty-nav .nav-link.active {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Main Content */
+.main-container {
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.section-title {
+    color: var(--dark-blue);
+    font-weight: 700;
+    border-bottom: 2px solid var(--accent-yellow);
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+/* Cards */
+.form-card {
+    border: none;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s;
+    margin-bottom: 20px;
+}
+
+.form-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.form-card-header {
+    background-color: var(--primary-blue);
+    color: white;
+    padding: 15px;
+    border-radius: 5px 5px 0 0 !important;
+}
+
+/* Buttons */
+.btn-mgm-primary {
+    background-color: var(--primary-blue);
+    color: white;
+}
+
+.btn-mgm-primary:hover {
+    background-color: #004494;
+    color: white;
+}
+
+.btn-mgm-secondary {
+    background-color: var(--accent-yellow);
+    color: #212529;
+}
+
+.btn-mgm-secondary:hover {
+    background-color: #e0a800;
+    color: #212529;
+}
+
+/* Badges */
+.badge-mgm {
+    background-color: var(--accent-yellow);
+    color: #212529;
+}
+
+/* Form Builder */
+.form-field-card {
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    padding: 15px;
+    background-color: var(--light-gray);
+}
+
+.field-options-container {
+    display: none;
+    margin-top: 10px;
+}
+
+/* Response Table */
+.response-table th {
+    background-color: var(--dark-blue);
+    color: white;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .college-name {
+        font-size: 1.2rem;
+    }
+
+    .faculty-nav .nav-link {
+        padding: 10px 15px;
+    }
+}

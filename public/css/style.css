@@ -1,0 +1,54 @@
+:root {
+    --primary-blue: #0056b3;
+    --dark-blue: #003366;
+    --light-gray: #f8f9fa;
+    --accent-yellow: #ffc107;
+}
+
+body {
+    background-color: #f4f7f6;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.college-header {
+    background-color: #fff;
+    padding: 10px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.college-logo {
+    height: 50px;
+}
+
+.college-name {
+    font-weight: 600;
+    font-size: 1.4rem;
+    margin-left: 15px;
+    color: #333;
+}
+
+.faculty-nav {
+    background-color: var(--dark-blue);
+}
+
+.btn-mgm-primary {
+    background-color: var(--primary-blue);
+    color: white;
+    border: none;
+}
+
+.btn-mgm-primary:hover {
+    background-color: #004a9a;
+    color: white;
+}
+
+.btn-mgm-secondary {
+    background-color: var(--accent-yellow);
+    color: #212529;
+    border: none;
+}
+
+.btn-mgm-secondary:hover {
+    background-color: #e0a800;
+    color: #212529;
+}

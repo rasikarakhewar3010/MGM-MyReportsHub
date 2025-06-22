@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MGM College - Faculty Forms</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+    <!-- College Header -->
+    <header class="college-header">
+        <div class="container">
+            <div class="d-flex align-items-center">
+                <img src="./fevicon.jpeg" alt="MGM College Logo" class="college-logo">
+                <div class="college-name">MGM's College of Engineering</div>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Faculty Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark faculty-nav">
+        <div class="container">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#facultyNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="facultyNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#" id="dashboardLink"><i class="fas fa-tachometer-alt me-2"></i>Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="createFormLink"><i class="fas fa-plus-circle me-2"></i>Create Form</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="responsesLink"><i class="fas fa-list-alt me-2"></i>Responses</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user-circle me-2"></i>Dr. Joshi
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>Profile</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Settings</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Main Content -->
+    <div class="container my-4">
+        <!-- Dashboard Section -->
+        <div id="dashboardSection">
+            <div class="main-container">
+                <h3 class="section-title"><i class="fas fa-tachometer-alt me-2"></i>Faculty Dashboard</h3>
+                
+                <div class="row">
+                    <div class="col-md-4 mb-4">
+                        <div class="card form-card h-100">
+                            <div class="card-body text-center">
+                                <i class="fas fa-file-alt fa-3x mb-3" style="color: var(--primary-blue);"></i>
+                                <h5>Total Forms Created</h5>
+                                <h2 id="totalFormsCount">12</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="card form-card h-100">
+                            <div class="card-body text-center">
+                                <i class="fas fa-users fa-3x mb-3" style="color: var(--primary-blue);"></i>
+                                <h5>Total Responses</h5>
+                                <h2 id="totalResponsesCount">84</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="card form-card h-100">
+                            <div class="card-body text-center">
+                                <i class="fas fa-share-alt fa-3x mb-3" style="color: var(--primary-blue);"></i>
+                                <h5>Active Forms</h5>
+                                <h2 id="activeFormsCount">5</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <h4 class="mt-4 mb-3"><i class="fas fa-file-alt me-2"></i>Recent Forms</h4>
+                
+                <div class="row" id="recentFormsList">
+                    <!-- Forms will be dynamically added here -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- Create Form Section -->
+        <div id="createFormSection" style="display: none;">
+            <div class="main-container">
+                <h3 class="section-title"><i class="fas fa-plus-circle me-2"></i>Create New Form</h3>
+                
+                <form id="formBuilder">
+                    <div class="mb-3">
+                        <label for="formTitle" class="form-label">Form Title</label>
+                        <input type="text" class="form-control" id="formTitle" placeholder="Enter form title" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="formDescription" class="form-label">Description</label>
+                        <textarea class="form-control" id="formDescription" rows="3" placeholder="Enter form description"></textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Form Fields</label>
+                        <div id="formFieldsContainer">
+                            <!-- Fields will be added here -->
+                        </div>
+                        <button type="button" class="btn btn-mgm-secondary mt-2" onclick="addFormField()">
+                            <i class="fas fa-plus me-2"></i>Add Field
+                        </button>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <button type="button" class="btn btn-outline-secondary me-md-2" onclick="resetFormBuilder()">
+                            <i class="fas fa-times me-2"></i>Cancel
+                        </button>
+                        <button type="submit" class="btn btn-mgm-primary">
+                            <i class="fas fa-save me-2"></i>Create Form
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Responses Section -->
+        <div id="responsesSection" style="display: none;">
+            <div class="main-container">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h3 class="section-title mb-0"><i class="fas fa-list-alt me-2"></i>Form Responses</h3>
+                    <div class="d-flex">
+                        <select class="form-select me-2" id="responseFormFilter" style="width: 200px;">
+                            <option value="all">All Forms</option>
+                            <!-- Form options will be added dynamically -->
+                        </select>
+                        <button class="btn btn-mgm-secondary" onclick="exportResponses()">
+                            <i class="fas fa-download me-2"></i>Export
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover response-table">
+                        <thead>
+                            <tr>
+                                <th>Form Title</th>
+                                <th>Student Name</th>
+                                <th>Roll No.</th>
+                                <th>Department</th>
+                                <th>Submission Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="responsesTable">
+                            <!-- Responses will be dynamically added here -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <nav aria-label="Response pagination">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" tabindex="-1">Previous</a>
+                        </li>
+                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                        <li class="page-item">
+                            <a class="page-link" href="#">Next</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+        
+        <!-- Form Link Modal -->
+        <div class="modal fade" id="formLinkModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title">Form Share Link</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Share this link with students to collect responses:</p>
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" id="formShareLink" readonly>
+                            <button class="btn btn-mgm-secondary" type="button" onclick="copyFormLink()">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </div>
+                        <div class="d-flex justify-content-center gap-2">
+                            <a href="#" class="btn btn-success" id="whatsappShareBtn">
+                                <i class="fab fa-whatsapp me-2"></i>Share on WhatsApp
+                            </a>
+                            <a href="#" class="btn btn-primary" id="emailShareBtn">
+                                <i class="fas fa-envelope me-2"></i>Email
+                            </a>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Response Details Modal -->
+        <div class="modal fade" id="responseDetailsModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title">Response Details</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" id="responseDetailsContent">
+                        <!-- Response details will be shown here -->
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-mgm-primary" onclick="printResponse()">
+                            <i class="fas fa-print me-2"></i>Print
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>MGM's College of Engineering</h5>
+                    <p>Providing quality Engineering education to cater the needs of industry and society.</p>
+                </div>
+                <div class="col-md-3">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-white">Home</a></li>
+                        <li><a href="#" class="text-white">Academics</a></li>
+                        <li><a href="#" class="text-white">Facilities</a></li>
+                        <li><a href="#" class="text-white">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5>Contact</h5>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-map-marker-alt me-2"></i> N-6, CIDCO, Aurangabad</li>
+                        <li><i class="fas fa-phone me-2"></i> +91 1234567890</li>
+                        <li><i class="fas fa-envelope me-2"></i> info@mgmcoe.edu</li>
+                    </ul>
+                </div>
+            </div>
+            <hr>
+            <div class="text-center">
+                <p class="mb-0">&copy; 2024 MGM's College of Engineering. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="./script.js"></script>
+    
+</body>
+</html>
