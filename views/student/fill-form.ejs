@@ -1,4 +1,5 @@
 <%- include('../partials/header') %>
+
 <div class="row justify-content-center mt-4">
     <div class="col-lg-8">
         <div class="card shadow-sm">
@@ -9,27 +10,69 @@
                 <p class="lead"><%= form.description %></p>
                 <p class="text-muted">Form created by: <%= form.createdBy.name %></p>
                 <hr>
-                <form action="/form/<%= form._id %>" method="POST" enctype="multipart/form-data">
-                    
-                    <% form.fields.forEach(field => { %>
+
+                <!-- Bootstrap validation form -->
+                <form action="/form/<%= form._id %>" method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
+                    <% form.fields.forEach(field => { 
+                        const fieldId = field.label.replace(/\s+/g, '-');
+                        const isPhone = field.label.toLowerCase().includes("phone");
+                        const isRoll = field.label.toLowerCase().includes("roll");
+                    %>
                         <div class="mb-3">
-                            <label for="<%= field.label.replace(/\s+/g, '-') %>" class="form-label">
+                            <label for="<%= fieldId %>" class="form-label">
                                 <%= field.label %>
                                 <% if (field.required) { %><span class="text-danger">*</span><% } %>
                             </label>
 
                             <% if (field.type === 'textarea') { %>
-                                <!-- THE FIX IS HERE: name="<%= field.label %>" -->
-                                <textarea class="form-control" id="<%= field.label.replace(/\s+/g, '-') %>" name="<%= field.label %>" rows="3" <%= field.required ? 'required' : '' %>></textarea>
+                                <textarea 
+                                    class="form-control" 
+                                    id="<%= fieldId %>" 
+                                    name="<%= field.label %>" 
+                                    rows="3" 
+                                    <%= field.required ? 'required' : '' %>>
+                                </textarea>
                             
                             <% } else if (field.type === 'file') { %>
-                                <!-- IMPORTANT: The file input name is 'reportFile' by convention, which the controller looks for -->
-                                <input type="file" class="form-control" id="<%= field.label.replace(/\s+/g, '-') %>" name="reportFile" accept=".pdf" <%= field.required ? 'required' : '' %>>
+                                <input 
+                                    type="file" 
+                                    class="form-control" 
+                                    id="<%= fieldId %>" 
+                                    name="reportFile" 
+                                    accept=".pdf" 
+                                    <%= field.required ? 'required' : '' %>>
                             
                             <% } else { %>
-                                <!-- THE FIX IS HERE: name="<%= field.label %>" -->
-                                <input type="<%= field.type %>" class="form-control" id="<%= field.label.replace(/\s+/g, '-') %>" name="<%= field.label %>" <%= field.required ? 'required' : '' %>>
+                                <input 
+                                    type="<%= field.type %>" 
+                                    class="form-control" 
+                                    id="<%= fieldId %>" 
+                                    name="<%= field.label %>" 
+                                    <%= field.required ? 'required' : '' %>
+                                    <% if (isPhone) { %>
+                                        pattern="[0-9]{10}"
+                                        oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10)"
+                                    <% } else if (isRoll) { %>
+                                        pattern="[0-9]+"
+                                        oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                                        min="0"
+                                    <% } %>
+                                    <% if (isPhone) { %>maxlength="10" minlength="10"<% } %>>
                             <% } %>
+
+                            <!-- Feedback messages -->
+                            <div class="valid-feedback">
+                                Looks good!
+                            </div>
+                            <div class="invalid-feedback">
+                                <% if (isPhone) { %>
+                                    Please enter a valid 10-digit phone number (digits only).
+                                <% } else if (isRoll) { %>
+                                    Please enter a valid roll number (digits only, starting from 0).
+                                <% } else { %>
+                                    Please provide a valid <%= field.label.toLowerCase() %>.
+                                <% } %>
+                            </div>
                         </div>
                     <% }) %>
 
@@ -41,4 +84,22 @@
         </div>
     </div>
 </div>
+
+<script>
+    // Bootstrap validation script
+    (() => {
+        'use strict'
+        const forms = document.querySelectorAll('.needs-validation')
+        Array.from(forms).forEach(form => {
+            form.addEventListener('submit', event => {
+                if (!form.checkValidity()) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                }
+                form.classList.add('was-validated')
+            }, false)
+        })
+    })()
+</script>
+
 <%- include('../partials/footer') %>

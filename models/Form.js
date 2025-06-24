@@ -3,8 +3,15 @@ const mongoose = require('mongoose');
 // This defines the structure of a single custom field
 const FieldSchema = new mongoose.Schema({
     label: { type: String, required: true },
-    type: { type: String, required: true, enum: ['text', 'email', 'number', 'textarea', 'file'] },
+    type: { 
+        type: String, 
+        required: true, 
+        enum: ['text', 'email', 'number', 'textarea', 'file'] 
+    },
     required: { type: Boolean, default: false },
+    // Optional: Add validation pattern if needed
+    validationPattern: { type: String, required: false },
+    validationMessage: { type: String, required: false }
 });
 
 const FormSchema = new mongoose.Schema({
@@ -22,7 +29,6 @@ const FormSchema = new mongoose.Schema({
         ref: 'Faculty',
         required: true,
     },
-    // This is the new part: an array to hold the custom fields
     fields: [FieldSchema],
     submissionCount: {
         type: Number,

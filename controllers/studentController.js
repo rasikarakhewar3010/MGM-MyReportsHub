@@ -5,7 +5,6 @@ const multer = require('multer');
 const upload = multer({ storage: multer.memoryStorage() });
 exports.upload = upload;
 
-
 // getForm function remains the same
 exports.getForm = async (req, res) => {
     try {
@@ -23,38 +22,75 @@ exports.getForm = async (req, res) => {
     }
 };
 
-
-
-// NEW: Supabase-based submitForm
-
 exports.submitForm = async (req, res) => {
     try {
         const form = await Form.findById(req.params.id);
         if (!form) return res.status(404).render('error', { message: 'Form not found.' });
 
+        // Validate required fields and specific field types
+        for (const field of form.fields) {
+            if (field.required && !req.body[field.label] && field.type !== 'file') {
+                return res.status(400).render('error', { 
+                    message: `Required field '${field.label}' is missing.` 
+                });
+            }
+
+            // Phone number validation
+            if (field.label.toLowerCase().includes('phone') && req.body[field.label]) {
+                const phoneRegex = /^[0-9]{10}$/;
+                if (!phoneRegex.test(req.body[field.label])) {
+                    return res.status(400).render('error', { 
+                        message: `Invalid phone number. Must be 10 digits.` 
+                    });
+                }
+            }
+
+            // Roll number validation
+            if (field.label.toLowerCase().includes('roll') && req.body[field.label]) {
+                const rollRegex = /^[0-9]+$/;
+                if (!rollRegex.test(req.body[field.label])) {
+                    return res.status(400).render('error', { 
+                        message: `Invalid roll number. Must contain only digits.` 
+                    });
+                }
+                if (parseInt(req.body[field.label]) < 0) {
+                    return res.status(400).render('error', { 
+                        message: `Roll number cannot be negative.` 
+                    });
+                }
+            }
+        }
+
         if (!req.file) {
-            return res.status(400).render('error', { message: 'PDF file required.' });
+            const hasFileField = form.fields.some(f => f.type === 'file' && f.required);
+            if (hasFileField) {
+                return res.status(400).render('error', { message: 'PDF file required.' });
+            }
         }
 
-        const fileName = `${Date.now()}_${req.file.originalname}`;
+        // Rest of the file upload and submission logic remains the same
+        const fileName = req.file ? `${Date.now()}_${req.file.originalname}` : null;
 
-        const { data, error } = await supabase.storage
-            .from('student-submissions')
-            .upload(fileName, req.file.buffer, {
-                contentType: 'application/pdf',
-            });
+        let fileUrl = null;
+        if (req.file) {
+            const { data, error } = await supabase.storage
+                .from('student-submissions')
+                .upload(fileName, req.file.buffer, {
+                    contentType: 'application/pdf',
+                });
 
-        if (error) {
-            console.error('Supabase Upload Error:', error);
-            return res.status(500).render('error', { message: 'File upload failed.' });
+            if (error) {
+                console.error('Supabase Upload Error:', error);
+                return res.status(500).render('error', { message: 'File upload failed.' });
+            }
+
+            const { data: publicUrlData } = supabase
+                .storage
+                .from('student-submissions')
+                .getPublicUrl(fileName);
+
+            fileUrl = publicUrlData.publicUrl;
         }
-
-        const { data: publicUrlData } = supabase
-            .storage
-            .from('student-submissions')
-            .getPublicUrl(fileName);
-
-        const fileUrl = publicUrlData.publicUrl;
 
         const submissionData = new Map();
 
@@ -65,7 +101,7 @@ exports.submitForm = async (req, res) => {
         }
 
         const fileField = form.fields.find(f => f.type === 'file');
-        if (fileField) {
+        if (fileField && fileUrl) {
             submissionData.set(fileField.label, fileUrl);
         }
 
@@ -77,7 +113,7 @@ exports.submitForm = async (req, res) => {
         form.submissionCount += 1;
         await form.save();
 
-       res.send(`
+        res.send(`
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -146,8 +182,6 @@ exports.submitForm = async (req, res) => {
 </body>
 </html>
 `);
-
-
 
     } catch (err) {
         console.error("Submit Error:", err);
