@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 
-// This defines the structure of a single custom field
 const FieldSchema = new mongoose.Schema({
     label: { type: String, required: true },
     type: { 
@@ -9,7 +8,6 @@ const FieldSchema = new mongoose.Schema({
         enum: ['text', 'email', 'number', 'textarea', 'file'] 
     },
     required: { type: Boolean, default: false },
-    // Optional: Add validation pattern if needed
     validationPattern: { type: String, required: false },
     validationMessage: { type: String, required: false }
 });
@@ -34,6 +32,19 @@ const FormSchema = new mongoose.Schema({
         type: Number,
         default: 0,
     },
+    deadline: {
+        type: Date,
+        required: true,
+    },
+    isActive: {
+        type: Boolean,
+        default: true,
+    }
 }, { timestamps: true });
+
+// Add a method to check if form is still accepting submissions
+FormSchema.methods.isAcceptingSubmissions = function() {
+    return this.isActive && new Date() < this.deadline;
+};
 
 module.exports = mongoose.model('Form', FormSchema);

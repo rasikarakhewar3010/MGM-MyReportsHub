@@ -1,6 +1,5 @@
 const Form = require('../models/Form');
 const Submission = require('../models/Submission');
-
 const { Parser } = require('json2csv');
 
 // GET /dashboard
@@ -27,7 +26,16 @@ exports.getNewFormPage = (req, res) => {
 // POST /dashboard/forms - Create the new dynamic form
 exports.createForm = async (req, res) => {
     try {
-        const { title, description, field_label, field_type, field_required } = req.body;
+        const { title, description, field_label, field_type, field_required, deadline } = req.body;
+
+        // Validate deadline is in the future
+        const deadlineDate = new Date(deadline);
+        if (deadlineDate <= new Date()) {
+            return res.render('error', { 
+                title: 'Invalid Deadline', 
+                message: 'Deadline must be in the future.' 
+            });
+        }
 
         const fields = [];
         if (Array.isArray(field_label)) {
@@ -38,7 +46,7 @@ exports.createForm = async (req, res) => {
                     required: field_required && field_required[i] === 'on' ? true : false,
                 });
             }
-        } else if (field_label) { // Case for a single field
+        } else if (field_label) {
             fields.push({
                 label: field_label,
                 type: field_type,
@@ -51,6 +59,7 @@ exports.createForm = async (req, res) => {
             description,
             fields,
             createdBy: req.faculty.id,
+            deadline: deadlineDate,
         });
 
         res.redirect('/dashboard');
@@ -60,21 +69,27 @@ exports.createForm = async (req, res) => {
     }
 };
 
-// GET /dashboard/forms/:id - NEW: Show details for a single form
+// GET /dashboard/forms/:id - Show details for a single form
 exports.getFormDetails = async (req, res) => {
     try {
         const form = await Form.findById(req.params.id);
         if (!form || form.createdBy.toString() !== req.faculty.id) {
-            return res.render('error', { title: 'Not Found', message: 'Form not found or you do not have permission to view it.' });
+            return res.render('error', { 
+                title: 'Not Found', 
+                message: 'Form not found or you do not have permission to view it.' 
+            });
         }
 
         const submissions = await Submission.find({ formId: form._id }).sort({ createdAt: 'desc' });
+        const now = new Date();
+        const isExpired = now > form.deadline;
 
         res.render('faculty/form-details', {
             title: `Details for ${form.title}`,
             form,
             submissions,
-            req: req, // Pass req for URL generation
+            isExpired,
+            req: req,
         });
     } catch (err) {
         console.error(err);
@@ -82,8 +97,7 @@ exports.getFormDetails = async (req, res) => {
     }
 };
 
-
-// GET /dashboard/forms/:id/export - NEW: Export data for a single form
+// GET /dashboard/forms/:id/export - Export data for a single form
 exports.exportFormSubmissions = async (req, res) => {
     try {
         const form = await Form.findById(req.params.id);
@@ -97,18 +111,11 @@ exports.exportFormSubmissions = async (req, res) => {
             return res.status(404).send('No submissions for this form to export.');
         }
 
-        // Dynamically create headers from the form fields
         const fields = form.fields.map(field => field.label);
-        fields.push('Submission Date'); // Add a standard submission date field
+        fields.push('Submission Date');
 
         const data = submissions.map(sub => {
-            // No changes needed above this line
-
-            // Create a row by spreading the plain 'data' object into a new object.
-            // This is a clean and modern way to handle it.
             let row = { ...sub.data };
-
-            // Then, add the submission date.
             row['Submission Date'] = new Date(sub.createdAt).toLocaleString();
             return row;
         });
@@ -117,7 +124,6 @@ exports.exportFormSubmissions = async (req, res) => {
         const csv = json2csvParser.parse(data);
 
         res.header('Content-Type', 'text/csv');
-        // Sanitize title for filename
         const filename = form.title.replace(/[^a-z0-9]/gi, '_').toLowerCase();
         res.attachment(`${filename}_submissions.csv`);
         res.send(csv);
@@ -128,21 +134,15 @@ exports.exportFormSubmissions = async (req, res) => {
     }
 };
 
-// controllers/formController.js
-// ... (keep all the existing controller functions)
-
 // NEW API FUNCTION
 exports.getFormSubmissionsAPI = async (req, res) => {
     try {
         const form = await Form.findById(req.params.id);
-        // Security check: ensure the faculty owns this form
         if (!form || form.createdBy.toString() !== req.faculty.id) {
             return res.status(403).json({ error: 'Forbidden' });
         }
         
         const submissions = await Submission.find({ formId: form._id }).sort({ createdAt: 'desc' });
-
-        // Send the data back as JSON
         res.status(200).json({ submissions });
 
     } catch (err) {

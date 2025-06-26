@@ -13,12 +13,17 @@
                 <label for="description" class="form-label fs-5">Description / Instructions</label>
                 <textarea name="description" id="description" rows="3" class="form-control" placeholder="e.g., Submit your report in PDF format." required></textarea>
             </div>
+            
+            <div class="mb-4">
+                <label for="deadline" class="form-label fs-5">Submission Deadline</label>
+                <input type="datetime-local" name="deadline" id="deadline" class="form-control" required>
+                <small class="text-muted">Set the date and time when submissions will close</small>
+            </div>
 
             <hr class="my-4">
             
             <h4 class="mb-3">Form Fields</h4>
             
-            <!-- Validation Guidance Box -->
             <div class="alert alert-info mb-4">
                 <h5 class="alert-heading"><i class="fas fa-info-circle me-2"></i>Validation Tips</h5>
                 <ul class="mb-0">
@@ -56,7 +61,6 @@
             <div class="col-md-5">
                 <label class="form-label">Field Label</label>
                 <input type="text" name="field_label" class="form-control" placeholder="e.g., Student Phone" required>
-                <small class="text-muted">Include "Phone" or "Roll" for automatic validation</small>
             </div>
             <div class="col-md-4">
                 <label class="form-label">Field Type</label>
@@ -67,7 +71,6 @@
                     <option value="number">Number</option>
                     <option value="file">File Upload (PDF)</option>
                 </select>
-                <small class="text-muted">Use "Text" for phone, "Number" for roll</small>
             </div>
             <div class="col-md-2">
                 <div class="form-check mt-4 pt-2">
@@ -84,6 +87,14 @@
             </div>
         `;
         container.appendChild(newField);
+    });
+
+    // Set minimum datetime to current time
+    document.addEventListener('DOMContentLoaded', () => {
+        const now = new Date();
+        const timezoneOffset = now.getTimezoneOffset() * 60000;
+        const localISOTime = new Date(now - timezoneOffset).toISOString().slice(0, 16);
+        document.getElementById('deadline').min = localISOTime;
     });
 </script>
 
