@@ -28,5 +28,10 @@
     "mongoose": "^8.16.0",
     "multer": "^2.0.1",
     "streamifier": "^0.1.1"
+  }, "devDependencies": {
+    "nodemon": "^3.1.7"
+  },
+  "engines": {
+    "node": "18.x"
   }
 }
